@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>3D Cube Demo</title>
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+
+      h1 {
+        margin: 0;
+        padding-top: 20px;
+
+        background-color: black;
+        font-family: Helvetica, sans-serif;
+        font-weight: lighter;
+        color: white;
+        text-align: center;
+      }
+
+      #content_buttons {
+        background-color: black;
+        display: flex;
+        flex-flow: row;
+        justify-content: center;
+        align-items: center;
+      }
+
+      button {
+        margin: 20px 15px 0 15px;
+        border-radius: 8px;
+        background-color: white;
+        border: solid white 2px;
+        height: 30px;
+        width: 150px;
+        font-size: 1em;
+      }
+
+      button:hover {
+        background-color: black;
+        color: white;
+        border-radius: 8px;
+        border: solid white 2px;
+      }
+
+    </style>
+  </head>
+  <body>
+    <h1>3D Cube Demo</h1>
+    <div id="content_buttons">
+      <button onclick="rotX()">Rotate Only X</button>
+      <button onclick="rotY()">Rotate Only Y</button>
+      <button onclick="rotB()">Rotate Both Axis</button>
+    </div>
+    <script src="three.min.js"></script>
+    <script>
+      //PREAMBLE
+      //Declaring needed things for the cube to render on the page.
+      //This would include the camera, the scene, the rendering object, and the aspect ratio of the animation.
+
+      //creating the scene
+      var scene = new THREE.Scene();
+
+      //getting the aspect ratio from the window height and width
+      var aspect = window.innerWidth / window.innerHeight;
+
+      //Creating the camera with various inputs that will allow for a clear render
+      var camera = new THREE.PerspectiveCamera (75, aspect, 0.1, 1000);
+
+      //rendering object
+      var renderer = new THREE.WebGLRenderer();
+
+      //RENDERER
+      //Renderer size, in this case its going to be the size of the window
+      renderer.setSize(window.innerWidth, window.innerHeight);
+
+      //Appending the renderer to the dom body element of the HTML file.
+      document.body.appendChild(renderer.domElement);
+
+      //THE CUBE ITSELF
+      //Declaring the properties of the cube to create the cube
+      //The dimensions
+      var geometry = new THREE.BoxGeometry(1,1,1);
+
+      //what will be seen on the cube
+      var material = new THREE.MeshNormalMaterial();
+
+      //creating the cube
+      var cube = new THREE.Mesh(geometry, material);
+
+      //adding the cube to the scene to be viewed by the camera
+      scene.add(cube);
+
+      //MISC
+      //tracking where the cube is moving
+      var isX = false;
+      var isY = false;
+      var isBoth = true;
+
+      //Positioning the camera to view the cube
+      camera.position.y = -0.5;
+      camera.position.z = 3;
+
+      function rotX() {
+        isX = true;
+        isY = false;
+        isBoth = false;
+      }
+
+      function rotY() {
+        isX = false;
+        isY = true;
+        isBoth = false;
+      }
+
+      //in terms of the animation, this is the default animation
+      function rotB() {
+        isX = false;
+        isY = false;
+        isBoth = true;
+      }
+
+      //animating the spinning cube
+      var render = function () {
+        requestAnimationFrame(render);
+        if (isX) {
+          cube.rotation.x += 0.01;
+        }
+        else if (isY) {
+          cube.rotation.y += 0.01;
+        }
+        else if (isBoth) {
+          cube.rotation.x += 0.01;
+          cube.rotation.y += 0.01;
+        }
+        renderer.render(scene, camera);
+      };
+
+      //rendering all of the animations of the cube
+      render();
+
+    </script>
+  </body>
+</html>
